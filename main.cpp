@@ -1,47 +1,47 @@
 #include <iostream>
 #include "string"
 
-char encrypt_caesar(char symbol, int shift) {
-  if (symbol < 'A' || symbol > 'Z' && symbol < 'a' || symbol > 'z'){
-
-  }else {
-	if (symbol + shift < 'A') {
-	  return 'Z' + 1 + (symbol - 'A' + shift);
-	} else if (symbol <= 'Z' && symbol + shift > 'Z') {
-	  return 'A' - 1 + (symbol - 'Z' + shift);
-	} else if (symbol >= 'a' && symbol + shift < 'a') {
-	  return 'z' + 1 + (symbol - 'a' + shift);
-	} else if (symbol + shift > 'z') {
-	  return 'a' - 1 + (symbol - 'z' + shift);
-	} else {
-	  return symbol + shift;
+std::string encrypt_caesar(std::string text, int shift) {
+  std::string temp;
+  for (char symbol : text) {
+	if ((symbol >= 'A' && symbol <= 'Z') || (symbol >= 'a' && symbol <= 'z')) {
+	  if (symbol + shift < 'A') {
+		temp += 'Z' + 1 + (symbol - 'A' + shift);
+	  } else if (symbol <= 'Z' && symbol + shift > 'Z') {
+		temp += 'A' - 1 + (symbol - 'Z' + shift);
+	  } else if (symbol >= 'a' && symbol + shift < 'a') {
+		temp += 'z' + 1 + (symbol - 'a' + shift);
+	  } else if (symbol + shift > 'z') {
+		temp += 'a' - 1 + (symbol - 'z' + shift);
+	  } else {
+		temp += symbol + shift;
+	  }
 	}
   }
+  return temp;
 }
 
-char decrypt_caesar(char symbol, int shift) {
-  return encrypt_caesar(encrypt_caesar(symbol, shift), -shift);
+void decrypt_caesar(std::string text, int shift) {
+  std::cout << encrypt_caesar(text, -shift);
 }
 
 int main() {
   std::string text;
-  int textShift=-27;
-
-  std::cout << "Input text: " << std::endl;
-  std::getline(std::cin, text);
+  int textShift;
   std::cout << "Input text shift: ";
   std::cin >> textShift;
+  std::cin.ignore(INT_MAX, '\n');
+  std::cout << "Input text: ";
+  std::getline(std::cin, text);
 
-  if (textShift > 26 || textShift < -26) {
+  if (std::abs(textShift) > 26) {
 	textShift %= 26;
   }
+
   std::cout << "Encrypt: ";
-  for (int symbol = 0; symbol < text.length(); symbol++) {
-	std::cout << encrypt_caesar(text[symbol], textShift);
-  }
+  text = encrypt_caesar(text, textShift);
+  std::cout << text;
   std::cout << std::endl << "Decrypt: ";
-  for (int symbol = 0; symbol < text.length(); symbol++) {
-	std::cout << decrypt_caesar(text[symbol], textShift);
-  }
+  decrypt_caesar(text, textShift);
   return 0;
 }
